@@ -9,6 +9,7 @@ public class Animal implements IPositionChangePublisher {
   private WorldMap map;
   private Vector2d position;
   private int energy;
+  private int initialEnergy;
   private final int dayOfBirth;
   private int numberOfChildren = 0;
   private int dayOfDeath;
@@ -17,26 +18,40 @@ public class Animal implements IPositionChangePublisher {
   private AnimalDNA DNA;
   LinkedList<IPositionChangeObserver> subscribers = new LinkedList<IPositionChangeObserver>();
 
-  public Animal(Animal parent1, Animal parent2, int dayOfBirth)
+  public Animal(Animal parent1, Animal parent2, int dayOfBirth, Vector2d position)
   {
+    this.position = position;
     parent1.addChild();
     parent2.addChild();
     DNA = new AnimalDNA(parent1.DNA, parent2.DNA);
     map = parent1.map;
     this.dayOfBirth = dayOfBirth;
+    energyHeritage(parent1, parent2);
   }
 
-  public Animal(WorldMap map, int dayOfBirth)
+  public Animal(WorldMap map, int dayOfBirth, int initialEnergy, Vector2d position)
   {
+    this.position = position;
+    this.initialEnergy = initialEnergy;
+    this.energy = initialEnergy;
     this.map = map;
     this.dayOfBirth = dayOfBirth;
     DNA = new AnimalDNA();
   }
 
-  public void die(int dayOfDeath)
+  public void ateGrass(int energy)
   {
-    isAlive = false;
-    this.dayOfDeath = dayOfDeath;
+    this.energy += energy;
+  }
+
+  public void newDay(int energy, int day)
+  {
+    this.energy -=energy;
+    if(energy <= 0)
+    {
+      dayOfDeath = day;
+      isAlive = false;
+    }
   }
 
   public void addChild()
@@ -101,6 +116,22 @@ public class Animal implements IPositionChangePublisher {
     {
       observer.positionChanged(oldPosition, newPosition);
     }
+  }
+
+  private void energyHeritage(Animal parent1, Animal parent2)
+  {
+    int energy_mod1 = parent1.energy%4;
+    int energy_mod2 = parent2.energy%4;
+    int energy1 = parent1.energy/4;
+    int energy2 = parent2.energy/4;
+    if((int)(Math.random()*2)==1)
+      energy1 += energy_mod1;
+    if((int)(Math.random()*2)==1)
+      energy2 += energy_mod2;
+    parent1.energy = parent1.energy - energy1;
+    parent2.energy = parent2.energy - energy2;
+    this.energy = energy1 + energy2;
+    this.initialEnergy = parent1.initialEnergy;
   }
 
   @Override

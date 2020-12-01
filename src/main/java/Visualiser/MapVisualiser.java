@@ -1,4 +1,4 @@
-// TODO: importy mogą wymagać aktualizacji w zależności od struktury projektu!
+package Visualiser;// TODO: importy mogą wymagać aktualizacji w zależności od struktury projektu!
 
 import map.WorldMap;
 import vector2d.Vector2d;
