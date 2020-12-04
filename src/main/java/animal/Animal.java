@@ -25,6 +25,7 @@ public class Animal implements IPositionChangePublisher {
     parent2.addChild();
     DNA = new AnimalDNA(parent1.DNA, parent2.DNA);
     map = parent1.map;
+    //this.map.place(this);
     this.dayOfBirth = dayOfBirth;
     energyHeritage(parent1, parent2);
   }
@@ -35,8 +36,16 @@ public class Animal implements IPositionChangePublisher {
     this.initialEnergy = initialEnergy;
     this.energy = initialEnergy;
     this.map = map;
+    //this.map.place(this);
     this.dayOfBirth = dayOfBirth;
     DNA = new AnimalDNA();
+  }
+
+  public boolean canMate()
+  {
+    if(energy*2 >= initialEnergy)
+      return true;
+    return false;
   }
 
   public void ateGrass(int energy)
