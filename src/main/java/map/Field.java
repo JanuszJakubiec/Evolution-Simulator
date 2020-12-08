@@ -4,11 +4,10 @@ import animal.Animal;
 import vector2d.Vector2d;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class Field {
-  private Vector2d position;
-  private ArrayList<Animal> animals = new ArrayList<Animal>();
+  private final Vector2d position;
+  private final ArrayList<Animal> animals = new ArrayList<Animal>();
   private boolean containsGrass = false;
   public Field(Vector2d position)
   {
@@ -20,20 +19,13 @@ public class Field {
     containsGrass = true;
   }
 
-  public boolean doesContainsGrass()
-  {
-    return containsGrass;
-  }
-
   public Vector2d getPosition() {
     return position;
   }
 
   public boolean isEmpty()
   {
-    if(animals.size() == 0 && !containsGrass)
-      return true;
-    return false;
+    return animals.size() == 0 && !containsGrass;
   }
 
   public boolean containsAnimals()

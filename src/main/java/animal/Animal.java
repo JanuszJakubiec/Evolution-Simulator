@@ -15,7 +15,7 @@ public class Animal implements IPositionChangePublisher {
   private int dayOfDeath;
   private boolean isAlive = true;
   private AnimalOrientation orientation = new AnimalOrientation();
-  private AnimalDNA DNA;
+  private static AnimalDNA DNA;
   LinkedList<IPositionChangeObserver> subscribers = new LinkedList<IPositionChangeObserver>();
 
   public Animal(Animal parent1, Animal parent2, int dayOfBirth, Vector2d position)
@@ -48,9 +48,7 @@ public class Animal implements IPositionChangePublisher {
 
   public boolean canMate()
   {
-    if(energy*2 >= initialEnergy)
-      return true;
-    return false;
+    return energy*2 >= initialEnergy;
   }
 
   public void ateGrass(int energy)

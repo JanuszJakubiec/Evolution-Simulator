@@ -3,11 +3,10 @@ import observer.IPositionChangeObserver;
 import vector2d.*;
 import animal.*;
 
-import javax.swing.*;
 import java.util.*;
 
 public class WorldMap implements IPositionChangeObserver {
-  private final Map<Vector2d, Field> animals = new LinkedHashMap<>();
+  private final Map<Vector2d, Field> fields = new LinkedHashMap<>();
   private final ArrayList<Animal> aliveAnimals = new ArrayList<>();
   private final ArrayList<Animal> deadAnimals = new ArrayList<>();
   private final Vector2d leftBottomCorner = new Vector2d(0,0);
@@ -16,6 +15,21 @@ public class WorldMap implements IPositionChangeObserver {
   public WorldMap(int width, int height)
   {
     rightTopCorner = new Vector2d(width-1,height-1);
+  }
+
+  public ArrayList<Animal> getDeadAnimals()
+  {
+    return deadAnimals;
+  }
+
+  public ArrayList<Animal> getAliveAnimals()
+  {
+    return aliveAnimals;
+  }
+
+  public Map<Vector2d, Field> getFields()
+  {
+    return fields;
   }
 
   public void moveAllAnimals()
@@ -32,17 +46,15 @@ public class WorldMap implements IPositionChangeObserver {
 
   public void plantGrass()
   {
-
+    //TODO
   }
 
-  public void eatGrass(int aEnergy)
+  public void makeAnimalsToEatGrass(int aEnergy)
   {
-    Collection<Field> fields = animals.values();
-    Iterator<Field> field = fields.iterator();
-    while(field.hasNext())
+    Collection<Field> colOfFields = fields.values();
+    for (Field current : colOfFields)
     {
-      Field current = field.next();
-      if(current.containsAnimals())
+      if (current.containsAnimals())
       {
         current.eatGrass(aEnergy);
       }
@@ -51,21 +63,13 @@ public class WorldMap implements IPositionChangeObserver {
 
   public void mateAnimals(int day)
   {
-    Collection<Field> fields = animals.values();
-    Iterator<Field> field = fields.iterator();
-    while(field.hasNext())
-    {
-      Field current = field.next();
-      if(current.containsAnimals())
-      {
-        current.mate(day, positionOfNewbornAnimal(current.getPosition()));
-      }
-    }
+    MatingAssistant matingOperator = new MatingAssistant(fields, day);
+    matingOperator.startMating();
   }
 
   public void cleanDeadAnimals()
   {
-    for(int i = 0; i<aliveAnimals.size(); i++)
+    for(int i = 0; i < aliveAnimals.size(); i++)
     {
       if(aliveAnimals.get(i).isDead())
       {
@@ -80,25 +84,25 @@ public class WorldMap implements IPositionChangeObserver {
   {
     Vector2d position = animal.getPosition();
     animal.addObserver(this);
-    if (!animals.containsKey(position))
+    if (!fields.containsKey(position))
     {
-      animals.put(position, new Field(position));
+      fields.put(position, new Field(position));
       //TODO delete position from available fields
     }
-    animals.get(position).insertNewAnimal(animal);
+    fields.get(position).insertNewAnimal(animal);
   }
 
   public Vector2d adjustPosition(Vector2d position)
   {
     int x = position.x;
     int y = position.y;
-    if(position.x > rightTopCorner.x)
+    if(position.x >= rightTopCorner.x)
       x = x - rightTopCorner.x;
     if(position.x < leftBottomCorner.x)
       x = x + rightTopCorner.x;
     if(position.y < leftBottomCorner.y)
       y = y + rightTopCorner.y;
-    if(position.y > rightTopCorner.y)
+    if(position.y >= rightTopCorner.y)
       y = y - rightTopCorner.y;
     return new Vector2d(x,y);
   }
@@ -106,50 +110,17 @@ public class WorldMap implements IPositionChangeObserver {
   @Override
   public void positionChanged(Vector2d oldPosition, Vector2d newPosition, Animal animal)
   {
-    animals.get(oldPosition).deleteAnimal(animal);
-    if(animals.get(oldPosition).isEmpty())
+    fields.get(oldPosition).deleteAnimal(animal);
+    if(fields.get(oldPosition).isEmpty())
     {
-      animals.remove(oldPosition);
+      fields.remove(oldPosition);
       //TODO add position to available fields
     }
-    if (!animals.containsKey(newPosition))
+    if (!fields.containsKey(newPosition))
     {
-      animals.put(newPosition, new Field(newPosition));
+      fields.put(newPosition, new Field(newPosition));
       //TODO delete position from available fields
     }
-    animals.get(newPosition).insertNewAnimal(animal);
-  }
-
-  private Vector2d positionOfNewbornAnimal(Vector2d parentPosition)
-  {
-    ArrayList<Vector2d> positions= new ArrayList<>();
-    for(int i = -1;i<2;i++)
-    {
-      for(int j =-1;j<2;j++)
-      {
-        Vector2d tmp = new Vector2d(parentPosition.x + i, parentPosition.y + j);
-        if(!animals.containsKey(tmp))
-        {
-          positions.add(tmp);
-        }
-        else
-        {
-          if(!animals.get(tmp).containsAnimals())
-          {
-            positions.add(tmp);
-          }
-        }
-      }
-    }
-    if(positions.size() > 0)
-    {
-      return positions.get((int)(Math.random() * positions.size()));
-    }
-    else
-    {
-      int i = (int)(Math.random() * 3) - 1;
-      int j = (int)(Math.random() * 3) - 1;
-      return(new Vector2d(parentPosition.x + i, parentPosition.y+j));
-    }
+    fields.get(newPosition).insertNewAnimal(animal);
   }
 }
