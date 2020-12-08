@@ -20,9 +20,25 @@ public class Field {
     containsGrass = true;
   }
 
-  public boolean ContainsGrass()
+  public boolean doesContainsGrass()
   {
     return containsGrass;
+  }
+
+  public Vector2d getPosition() {
+    return position;
+  }
+
+  public boolean isEmpty()
+  {
+    if(animals.size() == 0 && !containsGrass)
+      return true;
+    return false;
+  }
+
+  public boolean containsAnimals()
+  {
+    return animals.size() != 0;
   }
 
   public void eatGrass(int aEnergy) {
@@ -40,14 +56,18 @@ public class Field {
           strongestAnimals.get(i).ateGrass(rest);
       }
     }
+    containsGrass = false;
   }
 
   public void mate(int day, Vector2d position)
   {
-    ArrayList<Animal> strongestAnimals = TwoAnimalsWithTheMostEnergy();
-    if(strongestAnimals.get(1).canMate())
+    if(animals.size()>1)
     {
-      new Animal(strongestAnimals.get(0), strongestAnimals.get(1), day, position);
+      ArrayList<Animal> strongestAnimals = TwoAnimalsWithTheMostEnergy();
+      if(strongestAnimals.get(1).canMate())
+      {
+        new Animal(strongestAnimals.get(0), strongestAnimals.get(1), day, position);
+      }
     }
   }
 
@@ -69,7 +89,7 @@ public class Field {
     int i;
     for(i = 0;i<animals.size();i++)
     {
-      if (animals.get(i).equals(animal))
+      if (animals.get(i) == animal)
       {
         break;
       }

@@ -25,7 +25,7 @@ public class Animal implements IPositionChangePublisher {
     parent2.addChild();
     DNA = new AnimalDNA(parent1.DNA, parent2.DNA);
     map = parent1.map;
-    //this.map.place(this);
+    this.map.place(this);
     this.dayOfBirth = dayOfBirth;
     energyHeritage(parent1, parent2);
   }
@@ -39,6 +39,11 @@ public class Animal implements IPositionChangePublisher {
     //this.map.place(this);
     this.dayOfBirth = dayOfBirth;
     DNA = new AnimalDNA();
+  }
+
+  public boolean isDead()
+  {
+    return !isAlive;
   }
 
   public boolean canMate()
@@ -99,7 +104,7 @@ public class Animal implements IPositionChangePublisher {
   public void move()
   {
     orientation.rotate(DNA.decideRotation());
-    Vector2d positionTMP = position.add(orientation.step());
+    Vector2d positionTMP = map.adjustPosition(position.add(orientation.step()));
     positionChanged(position, positionTMP);
     position = positionTMP;
   }
@@ -123,7 +128,7 @@ public class Animal implements IPositionChangePublisher {
   {
     for(IPositionChangeObserver observer : subscribers)
     {
-      observer.positionChanged(oldPosition, newPosition);
+      observer.positionChanged(oldPosition, newPosition, this);
     }
   }
 
