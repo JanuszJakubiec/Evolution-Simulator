@@ -1,17 +1,21 @@
 package map;
 
+import observer.IFieldAvailabilityObserver;
+import observer.IFieldAvailabilityPublisher;
 import vector2d.Vector2d;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 
-public class GrassSectors {
+public class GrassSectors implements IFieldAvailabilityPublisher {
   private GrassSectors sectorInside = null;
   private final Vector2d leftBottomCorner;
   private final Vector2d rightTopCorner;
   private final FreeFields freeFields;
+  LinkedList<IFieldAvailabilityObserver> subscribers = new LinkedList<>();
 
-  public GrassSectors(int n, ArrayList<Vector2d> array)
+  public GrassSectors(int n, ArrayList<Vector2d> array, WorldMap map)
   {
     leftBottomCorner = array.get(0);
     rightTopCorner = array.get(1);
@@ -19,9 +23,9 @@ public class GrassSectors {
     array.remove(0);
     if(n!=0)
     {
-      sectorInside = new GrassSectors(n-1, array);
+      sectorInside = new GrassSectors(n-1, array, map);
     }
-    freeFields = new FreeFields();
+    freeFields = new FreeFields(map, this);
     markFreeFields();
   }
 
@@ -31,7 +35,10 @@ public class GrassSectors {
       sectorInside.plantGrass(fields);
     if(freeFields.isFreeFieldAvailable())
     {
-      fields.get(freeFields.placeGrass()).plantGrass();
+      Vector2d position = freeFields.placeGrass();
+      Field newField = new Field(position);
+      newField.plantGrass();
+      fields.put(position, newField);
     }
   }
 
@@ -51,9 +58,29 @@ public class GrassSectors {
         Vector2d point = new Vector2d(i,j);
         if(this.doesPointBelongTo(point))
         {
-          freeFields.add(point);
+          newFreePosition(point);
         }
       }
+    }
+  }
+
+  @Override
+  public void addObserver(IFieldAvailabilityObserver observer)
+  {
+    subscribers.add(observer);
+  }
+
+  @Override
+  public void removeObserver(IFieldAvailabilityObserver observer)
+  {
+    subscribers.remove(observer);
+  }
+
+  private void newFreePosition(Vector2d position)
+  {
+    for(IFieldAvailabilityObserver observer:subscribers)
+    {
+      observer.setPositionAsAvailable(position);
     }
   }
 }

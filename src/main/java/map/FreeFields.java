@@ -1,24 +1,17 @@
 package map;
 
+import observer.IFieldAvailabilityObserver;
 import vector2d.Vector2d;
 
 import java.util.ArrayList;
 
-public class FreeFields {
+public class FreeFields implements IFieldAvailabilityObserver {
   private final ArrayList<Vector2d> free = new ArrayList<>();
 
-  public FreeFields()
+  public FreeFields(WorldMap map, GrassSectors sector)
   {
-  }
-
-  public void add(Vector2d position)
-  {
-    free.add(position);
-  }
-
-  public void remove(Vector2d position)
-  {
-    free.remove(position);
+    map.addObserver(this);
+    sector.addObserver(this);
   }
 
   public boolean isFreeFieldAvailable()
@@ -32,5 +25,25 @@ public class FreeFields {
     Vector2d place = free.get(number);
     free.remove(number);
     return place;
+  }
+
+  @Override
+  public void setPositionAsUnavailable(Vector2d position) {
+    this.add(position);
+  }
+
+  @Override
+  public void setPositionAsAvailable(Vector2d position) {
+    this.remove(position);
+  }
+
+  private void add(Vector2d position)
+  {
+    free.add(position);
+  }
+
+  private void remove(Vector2d position)
+  {
+    free.remove(position);
   }
 }

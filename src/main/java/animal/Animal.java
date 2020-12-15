@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 public class Animal implements IPositionChangePublisher {
-  private WorldMap map;
+  private final WorldMap map;
   private Vector2d position;
   private int energy;
   private int initialEnergy;
@@ -14,16 +14,16 @@ public class Animal implements IPositionChangePublisher {
   private int numberOfChildren = 0;
   private int dayOfDeath;
   private boolean isAlive = true;
-  private AnimalOrientation orientation = new AnimalOrientation();
+  private final AnimalOrientation orientation = new AnimalOrientation();
   private static AnimalDNA DNA;
-  LinkedList<IPositionChangeObserver> subscribers = new LinkedList<IPositionChangeObserver>();
+  LinkedList<IPositionChangeObserver> subscribers = new LinkedList<>();
 
   public Animal(Animal parent1, Animal parent2, int dayOfBirth, Vector2d position)
   {
     this.position = position;
     parent1.addChild();
     parent2.addChild();
-    DNA = new AnimalDNA(parent1.DNA, parent2.DNA);
+    DNA = new AnimalDNA(parent1.getDNA(), parent2.getDNA());
     map = parent1.map;
     this.map.place(this);
     this.dayOfBirth = dayOfBirth;
@@ -36,14 +36,14 @@ public class Animal implements IPositionChangePublisher {
     this.initialEnergy = initialEnergy;
     this.energy = initialEnergy;
     this.map = map;
-    //this.map.place(this);
+    this.map.place(this);
     this.dayOfBirth = dayOfBirth;
     DNA = new AnimalDNA();
   }
 
   public boolean isDead()
   {
-    return !isAlive;
+    return (!this.isAlive);
   }
 
   public boolean canMate()
@@ -58,11 +58,11 @@ public class Animal implements IPositionChangePublisher {
 
   public void newDay(int energy, int day)
   {
-    this.energy -=energy;
-    if(energy <= 0)
+    this.energy = this.energy - energy;
+    if(this.energy <= 0)
     {
-      dayOfDeath = day;
-      isAlive = false;
+      this.dayOfDeath = day;
+      this.isAlive = false;
     }
   }
 
@@ -84,6 +84,8 @@ public class Animal implements IPositionChangePublisher {
   }
 
   public int getDayOfDeath() {
+    if(isAlive)
+      return -1;
     return dayOfDeath;
   }
 

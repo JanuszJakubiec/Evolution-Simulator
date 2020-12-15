@@ -1,20 +1,25 @@
 package map;
+import observer.IFieldAvailabilityObserver;
 import observer.IPositionChangeObserver;
+import observer.IFieldAvailabilityPublisher;
 import vector2d.*;
 import animal.*;
 
 import java.util.*;
 
-public class WorldMap implements IPositionChangeObserver {
+public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPublisher {
   private final Map<Vector2d, Field> fields = new LinkedHashMap<>();
   private final ArrayList<Animal> aliveAnimals = new ArrayList<>();
   private final ArrayList<Animal> deadAnimals = new ArrayList<>();
   private final Vector2d leftBottomCorner = new Vector2d(0,0);
   private final Vector2d rightTopCorner;
+  private GrassSectors sectors;
+  LinkedList<IFieldAvailabilityObserver> subscribers = new LinkedList<>();
 
-  public WorldMap(int width, int height)
+  public WorldMap(int width, int height, double jungleRatio)
   {
-    rightTopCorner = new Vector2d(width-1,height-1);
+    rightTopCorner = new Vector2d(width-1, height-1);
+    sectors = new GrassSectors(1, calculateSectorBorders(width, height, jungleRatio) , this);
   }
 
   public ArrayList<Animal> getDeadAnimals()
@@ -46,7 +51,7 @@ public class WorldMap implements IPositionChangeObserver {
 
   public void plantGrass()
   {
-    //TODO
+    sectors.plantGrass(fields);
   }
 
   public void makeAnimalsToEatGrass(int aEnergy)
@@ -87,7 +92,7 @@ public class WorldMap implements IPositionChangeObserver {
     if (!fields.containsKey(position))
     {
       fields.put(position, new Field(position));
-      //TODO delete position from available fields
+      makePositionUnavailable(position);
     }
     fields.get(position).insertNewAnimal(animal);
   }
@@ -114,13 +119,55 @@ public class WorldMap implements IPositionChangeObserver {
     if(fields.get(oldPosition).isEmpty())
     {
       fields.remove(oldPosition);
-      //TODO add position to available fields
+      newFreePosition(oldPosition);
     }
     if (!fields.containsKey(newPosition))
     {
       fields.put(newPosition, new Field(newPosition));
-      //TODO delete position from available fields
+      makePositionUnavailable(newPosition);
     }
     fields.get(newPosition).insertNewAnimal(animal);
+  }
+
+  @Override
+  public void addObserver(IFieldAvailabilityObserver observer)
+  {
+    subscribers.add(observer);
+  }
+
+  @Override
+  public void removeObserver(IFieldAvailabilityObserver observer)
+  {
+    subscribers.remove(observer);
+  }
+
+  private void newFreePosition(Vector2d position)
+  {
+    for(IFieldAvailabilityObserver observer:subscribers)
+    {
+      observer.setPositionAsAvailable(position);
+    }
+  }
+
+  private void makePositionUnavailable(Vector2d position)
+  {
+    for(IFieldAvailabilityObserver observer:subscribers)
+    {
+      observer.setPositionAsUnavailable(position);
+    }
+  }
+
+  private ArrayList<Vector2d> calculateSectorBorders(int width, int height, double ratio)
+  {
+    ArrayList<Vector2d> list = new ArrayList<>();
+    list.add(new Vector2d(0,0));
+    list.add(new Vector2d(width-1, height-1));
+    int x = (int) ((int) width*ratio);
+    int y = (int) ((int) height*ratio);
+    int dx = (width - x)/2;
+    int dy = (height - y)/2;
+    list.add(new Vector2d(dx,dy));
+    list.add(new Vector2d(dx+x -1, dy+y-1));
+    return list;
   }
 }
