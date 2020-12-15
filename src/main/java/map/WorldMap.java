@@ -46,7 +46,7 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
   public void takeEnergyFromAnimals(int day, int energy)
   {
     for(Animal animal:aliveAnimals)
-      animal.newDay(day, energy);
+      animal.takeEnergy(energy,day);
   }
 
   public void plantGrass()
@@ -79,6 +79,13 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
       if(aliveAnimals.get(i).isDead())
       {
         deadAnimals.add(aliveAnimals.get(i));
+        Animal animal = aliveAnimals.get(i);
+        fields.get(animal.getPosition()).deleteAnimal(aliveAnimals.get(i));
+        if(fields.get(animal.getPosition()).isEmpty())
+        {
+          fields.remove(animal.getPosition());
+          newFreePosition(animal.getPosition());
+        }
         aliveAnimals.remove(i);
         i--;
       }
@@ -88,6 +95,7 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
   public void place(Animal animal)
   {
     Vector2d position = animal.getPosition();
+    aliveAnimals.add(animal);
     animal.addObserver(this);
     if (!fields.containsKey(position))
     {
@@ -101,14 +109,14 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
   {
     int x = position.x;
     int y = position.y;
-    if(position.x >= rightTopCorner.x)
-      x = x - rightTopCorner.x;
+    if(position.x > rightTopCorner.x)
+      x = x - rightTopCorner.x - 1;
     if(position.x < leftBottomCorner.x)
       x = x + rightTopCorner.x;
     if(position.y < leftBottomCorner.y)
       y = y + rightTopCorner.y;
-    if(position.y >= rightTopCorner.y)
-      y = y - rightTopCorner.y;
+    if(position.y > rightTopCorner.y)
+      y = y - rightTopCorner.y-1;
     return new Vector2d(x,y);
   }
 

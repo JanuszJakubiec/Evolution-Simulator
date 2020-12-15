@@ -16,6 +16,7 @@ public class FreeFields implements IFieldAvailabilityObserver {
 
   public boolean isFreeFieldAvailable()
   {
+    System.out.print(free.size());
     return free.size() > 0;
   }
 
@@ -29,12 +30,12 @@ public class FreeFields implements IFieldAvailabilityObserver {
 
   @Override
   public void setPositionAsUnavailable(Vector2d position) {
-    this.add(position);
+    this.remove(position);
   }
 
   @Override
   public void setPositionAsAvailable(Vector2d position) {
-    this.remove(position);
+    this.add(position);
   }
 
   private void add(Vector2d position)

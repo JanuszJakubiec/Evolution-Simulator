@@ -42,28 +42,6 @@ public class GrassSectors implements IFieldAvailabilityPublisher {
     }
   }
 
-  private boolean doesPointBelongTo(Vector2d point)
-  {
-    if(point.follows(leftBottomCorner) && point.precedes(rightTopCorner))
-      return (sectorInside == null || !sectorInside.doesPointBelongTo(point));
-    return false;
-  }
-
-  private void markFreeFields()
-  {
-    for(int i= leftBottomCorner.x; i<rightTopCorner.x;i++)
-    {
-      for(int j= leftBottomCorner.y; j< rightTopCorner.y; j++)
-      {
-        Vector2d point = new Vector2d(i,j);
-        if(this.doesPointBelongTo(point))
-        {
-          newFreePosition(point);
-        }
-      }
-    }
-  }
-
   @Override
   public void addObserver(IFieldAvailabilityObserver observer)
   {
@@ -74,6 +52,29 @@ public class GrassSectors implements IFieldAvailabilityPublisher {
   public void removeObserver(IFieldAvailabilityObserver observer)
   {
     subscribers.remove(observer);
+  }
+
+
+  private boolean doesPointBelongTo(Vector2d point)
+  {
+    if(point.follows(leftBottomCorner) && point.precedes(rightTopCorner))
+      return (sectorInside == null || !sectorInside.doesPointBelongTo(point));
+    return false;
+  }
+
+  private void markFreeFields()
+  {
+    for(int i= leftBottomCorner.x; i<=rightTopCorner.x;i++)
+    {
+      for(int j= leftBottomCorner.y; j<=rightTopCorner.y; j++)
+      {
+        Vector2d point = new Vector2d(i,j);
+        if(this.doesPointBelongTo(point))
+        {
+          newFreePosition(point);
+        }
+      }
+    }
   }
 
   private void newFreePosition(Vector2d position)

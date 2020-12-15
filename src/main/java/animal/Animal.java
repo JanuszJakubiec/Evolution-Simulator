@@ -56,7 +56,7 @@ public class Animal implements IPositionChangePublisher {
     this.energy += energy;
   }
 
-  public void newDay(int energy, int day)
+  public void takeEnergy(int energy, int day)
   {
     this.energy = this.energy - energy;
     if(this.energy <= 0)

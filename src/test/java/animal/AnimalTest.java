@@ -19,21 +19,21 @@ class AnimalTest {
   @Test
   void checkEnergyReduction() {
     Animal animal = new Animal(new WorldMap(5,5,0.5), 0, 5, new Vector2d(0,0));
-    animal.newDay(3,1);
+    animal.takeEnergy(3,1);
     assertEquals(2,animal.getEnergy());
   }
 
   @Test
   void checkDeathAction() {
     Animal animal = new Animal(new WorldMap(5,5,0.5), 0, 5, new Vector2d(0,0));
-    animal.newDay(5,1);
+    animal.takeEnergy(5,1);
     assertTrue(animal.isDead());
   }
 
   @Test
   void checkDayOfDeath() {
     Animal animal = new Animal(new WorldMap(5,5,0.5), 0, 5, new Vector2d(0,0));
-    animal.newDay(5,1);
+    animal.takeEnergy(5,1);
     assertEquals(1,animal.getDayOfDeath());
   }
 
@@ -46,14 +46,14 @@ class AnimalTest {
   @Test
   void checkIfAnimalCanMateTrue() {
     Animal animal = new Animal(new WorldMap(5,5,0.5), 0, 6, new Vector2d(0,0));
-    animal.newDay(3,1);
+    animal.takeEnergy(3,1);
     assertTrue(animal.canMate());
   }
 
   @Test
   void checkIfAnimalCanMateFalse() {
     Animal animal = new Animal(new WorldMap(5,5,0.5), 0, 5, new Vector2d(0,0));
-    animal.newDay(3,1);
+    animal.takeEnergy(3,1);
     assertFalse(animal.canMate());
   }
 
@@ -118,7 +118,7 @@ class AnimalTest {
     Animal parent1 = new Animal(new WorldMap(5,5,0.5), 5, 8, new Vector2d(0,0));
     Animal parent2 = new Animal(new WorldMap(5,5,0.5), 5, 8, new Vector2d(0,0));
     Animal animal = new Animal(parent1,parent2, 1, new Vector2d(0, 1));
-    animal.newDay(1,2);
+    animal.takeEnergy(1,2);
     assertFalse(animal.canMate());
   }
 
