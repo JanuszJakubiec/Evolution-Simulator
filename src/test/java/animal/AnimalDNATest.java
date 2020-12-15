@@ -1,3 +1,5 @@
+package animal;
+
 import animal.AnimalDNA;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
