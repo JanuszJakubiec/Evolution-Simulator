@@ -111,7 +111,7 @@ public class AnimalDNA {
     }
     for(int i=8 ; i<32 ; i++)
     {
-      DNA.add((int)(Math.random() * 8);
+      DNA.add((int)(Math.random() * 8));
     }
     Collections.sort(DNA);
   }
