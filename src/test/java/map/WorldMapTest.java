@@ -86,4 +86,130 @@ class WorldMapTest {
     assertEquals(12, animal1.getEnergy());
   }
 
+  @Test
+  void testIfMatingCreatesNewAnimal()
+  {
+    WorldMap map = new WorldMap(5,5, 0.5);
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    map.mateAnimals(3);
+    assertEquals(3, map.getAliveAnimals().size());
+  }
+
+  @Test
+  void testIfAfterMatingAnimalHasProperAmountOfEnergy()
+  {
+    WorldMap map = new WorldMap(5,5, 0.5);
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    map.mateAnimals(3);
+    assertEquals(4, map.getAliveAnimals().get(2).getEnergy());
+  }
+
+  @Test
+  void testIfAfterMatingParentHasProperAmountOfEnergy()
+  {
+    WorldMap map = new WorldMap(5,5, 0.5);
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    map.mateAnimals(3);
+    assertEquals(6, animal1.getEnergy());
+  }
+
+  @Test
+  void testIfAfterMatingAnimalIsInFreePosition()
+  {
+    WorldMap map = new WorldMap(5,5, 0.5);
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    map.mateAnimals(3);
+    assertNotEquals(animal1.getPosition(), map.getAliveAnimals().get(2).getPosition());
+  }
+
+  @Test
+  void testIfAfterMatingAnimalIsInCorrectPosition()
+  {
+    WorldMap map = new WorldMap(1,1, 0.5);
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    map.mateAnimals(3);
+    assertEquals(animal1.getPosition(), map.getAliveAnimals().get(2).getPosition());
+  }
+
+  @Test
+  void testIfCorrectAnimalsAreMating()
+  {
+    WorldMap map = new WorldMap(1,1, 0.5);
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    map.mateAnimals(3);
+    map.mateAnimals(4);
+    int energy = map.getAliveAnimals().get(3).getEnergy();
+    assertTrue(energy == 2 || energy == 4 || energy == 6);
+  }
+
+  @Test
+  void testIfCorrectAnimalsAreMatingTwo()
+  {
+    WorldMap map = new WorldMap(1,1, 0.5);
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    map.mateAnimals(3);
+    map.mateAnimals(4);
+    int energy1 = map.getAliveAnimals().get(3).getEnergy();
+    map.mateAnimals(5);
+    int energy2 = map.getAliveAnimals().get(4).getEnergy();
+    if(energy1 == 2)
+    {
+      assertTrue((energy2 == 2 || energy2 == 3 || energy2 == 4) && getEnergySum(map) == 16);
+    }
+    if(energy1 == 4)
+    {
+      assertTrue((energy2 == 2 || energy2 == 3) && getEnergySum(map) == 16);
+    }
+    if(energy1 == 6)
+    {
+      assertTrue((energy2 == 2 || energy2 == 4) && getEnergySum(map) == 16);
+    }
+  }
+
+  @Test
+  void checkIfProperAnimalEatsTheGrass()
+  {
+    WorldMap map = new WorldMap(1,1, 0.5);
+    map.plantGrass();
+    Animal animal1 = new Animal(map,0,8,new Vector2d(0,0));
+    Animal animal2 = new Animal(map,0,8,new Vector2d(0,0));
+    animal2.takeEnergy(2, 0);
+    map.mateAnimals(1);
+    map.makeAnimalsToEatGrass(4);
+    assertEquals(10, animal1.getEnergy());
+  }
+
+  @Test
+  void checkIfGrassIsSpawningCorrectlyNumbers()
+  {
+    WorldMap map = new WorldMap(2,2, 0.5);
+    map.plantGrass();
+    assertEquals(map.getFields().size(), 2);
+  }
+
+  @Test
+  void checkIfGrassIsSpawningCorrectlyPositions()
+  {
+    WorldMap map = new WorldMap(2,2, 0.5);
+    map.plantGrass();
+    assertFalse(map.getFields().get(new Vector2d(0,0)).isEmpty());
+  }
+
+
+  private int getEnergySum(WorldMap map)
+  {
+    int sum = 0;
+    for(Animal animal : map.getAliveAnimals())
+    {
+      sum += animal.getEnergy();
+    }
+    return sum;
+  }
 }

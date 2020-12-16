@@ -56,10 +56,14 @@ public class Field {
     if(animals.size()>1)
     {
       ArrayList<Animal> strongestAnimals = TwoAnimalsWithTheMostEnergy();
+      this.deleteAnimal(strongestAnimals.get(0));
+      this.deleteAnimal(strongestAnimals.get(1));
       if(strongestAnimals.get(1).canMate())
       {
         new Animal(strongestAnimals.get(0), strongestAnimals.get(1), day, position);
       }
+      this.insertNewAnimal(strongestAnimals.get(0));
+      this.insertNewAnimal(strongestAnimals.get(1));
     }
   }
 
@@ -91,19 +95,15 @@ public class Field {
 
   private ArrayList<Animal> animalsWithTheMostEnergy()
   {
-    ArrayList<Animal> animalsEnergyLVL = new ArrayList<Animal>();
+    ArrayList<Animal> animalsEnergyLVL = new ArrayList<>();
     if (animals.size() > 0) {
       int energy = 0;
       energy = animals.get(0).getEnergy();
       animalsEnergyLVL.add(animals.get(0));
-      if (animals.size() > 1 && animals.get(1).getEnergy() == energy)
-      {
-        int i = 2;
-        while (i < animals.size() && animals.get(i).getEnergy() == energy)
-        {
-          animalsEnergyLVL.add(animals.get(i));
-          i++;
-        }
+      int i = 1;
+      while (i < animals.size() && animals.get(i).getEnergy() == energy) {
+        animalsEnergyLVL.add(animals.get(i));
+        i++;
       }
     }
     return animalsEnergyLVL;
@@ -143,12 +143,17 @@ public class Field {
   {
     ArrayList<Animal> animalsEnergyLVL = animalsWithTheMostEnergy();
     if(animalsEnergyLVL.size() > 1)
+    {
       return twoSameLevelAnimals(animalsEnergyLVL);
+    }
     animalsEnergyLVL.add(animals.get(1));
     int energy = animals.get(1).getEnergy();
     int i = 2;
     while(i<animals.size() && animals.get(i).getEnergy()==energy)
+    {
       animalsEnergyLVL.add(animals.get(i));
+      i++;
+    }
     return twoDifferentLevelAnimals(animalsEnergyLVL);
   }
 }

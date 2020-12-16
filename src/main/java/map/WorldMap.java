@@ -13,7 +13,7 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
   private final ArrayList<Animal> deadAnimals = new ArrayList<>();
   private final Vector2d leftBottomCorner = new Vector2d(0,0);
   private final Vector2d rightTopCorner;
-  private GrassSectors sectors;
+  private final GrassSectors sectors;
   LinkedList<IFieldAvailabilityObserver> subscribers = new LinkedList<>();
 
   public WorldMap(int width, int height, double jungleRatio)
@@ -68,7 +68,7 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
 
   public void mateAnimals(int day)
   {
-    MatingAssistant matingOperator = new MatingAssistant(fields, day);
+    MatingAssistant matingOperator = new MatingAssistant(fields, day, rightTopCorner, this);
     matingOperator.startMating();
   }
 
@@ -112,9 +112,9 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
     if(position.x > rightTopCorner.x)
       x = x - rightTopCorner.x - 1;
     if(position.x < leftBottomCorner.x)
-      x = x + rightTopCorner.x;
+      x = x + rightTopCorner.x + 1;
     if(position.y < leftBottomCorner.y)
-      y = y + rightTopCorner.y;
+      y = y + rightTopCorner.y + 1;
     if(position.y > rightTopCorner.y)
       y = y - rightTopCorner.y-1;
     return new Vector2d(x,y);

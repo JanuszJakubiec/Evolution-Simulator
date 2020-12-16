@@ -10,11 +10,16 @@ public class MatingAssistant {
   private final Map<Vector2d, Field> fields;
   private Vector2d parentPosition;
   private final int day;
+  private final Vector2d leftBottomCorner = new Vector2d(0,0);
+  private final Vector2d rightTopCorner;
+  private final WorldMap map;
 
-  public MatingAssistant(Map<Vector2d, Field> fields, int day)
+  public MatingAssistant(Map<Vector2d, Field> fields, int day, Vector2d rightTopCorner, WorldMap map)
   {
     this.fields = fields;
     this.day=day;
+    this.rightTopCorner = rightTopCorner;
+    this.map = map;
   }
 
   public void startMating()
@@ -41,7 +46,7 @@ public class MatingAssistant {
     {
       int i = (int)(Math.random() * 3) - 1;
       int j = (int)(Math.random() * 3) - 1;
-      return(new Vector2d(parentPosition.x + i, parentPosition.y+j));
+      return(map.adjustPosition(new Vector2d(parentPosition.x + i, parentPosition.y+j)));
     }
   }
 
@@ -53,6 +58,8 @@ public class MatingAssistant {
       for(int j =-1;j<2;j++)
       {
         Vector2d tmp = new Vector2d(parentPosition.x + i, parentPosition.y + j);
+        if(!tmp.precedes(rightTopCorner) || !tmp.follows(leftBottomCorner))
+          continue;
         if(!fields.containsKey(tmp))
         {
           freeFields.add(tmp);
