@@ -6,8 +6,6 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class FileParser {
   public int width;

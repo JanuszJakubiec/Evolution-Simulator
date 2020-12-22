@@ -30,7 +30,7 @@ public class Simulation extends BorderPane {
     ArrayList<Vector2d> list = JungleBorderCalculator.calculate(width, height, jungleRatio);
     engine = new Engine(width, height, jungleRatio, numberOfAnimals, animalStartingEnergy, dayCost, energyFromGrass);
     dnaStatistics = new DNAStatistics(this.engine);
-    statistics = new Statistics(engine, animalSelected, dnaStatistics);
+    statistics = new Statistics(engine, dnaStatistics);
     board = new Board(engine, width, height, list.get(2), list.get(3), this, dnaStatistics);
     this.setLeft(leftSide());
     Thread thread = createThread();

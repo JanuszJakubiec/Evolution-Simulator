@@ -5,9 +5,7 @@ import map.Field;
 import map.WorldMap;
 import vector2d.Vector2d;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Engine {
