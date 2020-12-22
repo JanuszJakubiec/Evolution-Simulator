@@ -12,21 +12,18 @@ import java.util.Collection;
 
 public class Statistics extends GridPane {
   private final Engine engine;
-  private Animal trackedAnimal;
   private DNAStatistics dnaStatistics;
   private double energySum = 0;
   private double numberOfKids = 0;
 
-  public Statistics(Engine engine, Animal trackedAnimal, DNAStatistics dnaStatistics)
+  public Statistics(Engine engine, DNAStatistics dnaStatistics)
   {
     this.engine = engine;
     this.dnaStatistics = dnaStatistics;
-    this.trackedAnimal = trackedAnimal;
   }
 
   public void updateStatistics(Animal trackedAnimal, int selectedAnimalCounter)
   {
-    this.trackedAnimal = trackedAnimal;
     this.getChildren().clear();
     aliveAnimalsOperations();
     this.add(new Text("Day: " + engine.getDay()), 0, 0);

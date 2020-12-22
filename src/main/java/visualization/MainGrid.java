@@ -4,8 +4,6 @@ import javafx.scene.layout.GridPane;
 import utilities.FileParser;
 import utilities.rowColUtilities;
 
-import java.io.File;
-
 public class MainGrid extends GridPane {
   private final FileParser file;
   public MainGrid() throws Exception

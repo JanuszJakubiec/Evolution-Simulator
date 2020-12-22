@@ -2,7 +2,6 @@ package map;
 
 import vector2d.Vector2d;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
