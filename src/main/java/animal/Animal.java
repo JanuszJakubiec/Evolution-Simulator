@@ -6,24 +6,27 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 public class Animal implements IPositionChangePublisher {
+  private static int initialEnergy;
   private final WorldMap map;
   private Vector2d position;
   private int energy;
-  private int initialEnergy;
   private final int dayOfBirth;
   private int numberOfChildren = 0;
   private int dayOfDeath;
   private boolean isAlive = true;
   private final AnimalOrientation orientation = new AnimalOrientation();
-  private static AnimalDNA DNA;
-  LinkedList<IPositionChangeObserver> subscribers = new LinkedList<>();
+  private final AnimalDNA DNA;
+  private final LinkedList<IPositionChangeObserver> subscribers = new LinkedList<>();
+  private Integer ancestryFactor = -1;
+  private boolean isSelectedAnimal = false;
 
   public Animal(Animal parent1, Animal parent2, int dayOfBirth, Vector2d position)
   {
+    ancestryFactor = Math.max(parent1.ancestryFactor, parent2.ancestryFactor);
     this.position = position;
     parent1.addChild();
     parent2.addChild();
-    DNA = new AnimalDNA(parent1.getDNA(), parent2.getDNA());
+    DNA = new AnimalDNA(parent1.DNA, parent2.DNA);
     map = parent1.map;
     this.map.place(this);
     this.dayOfBirth = dayOfBirth;
@@ -33,12 +36,28 @@ public class Animal implements IPositionChangePublisher {
   public Animal(WorldMap map, int dayOfBirth, int initialEnergy, Vector2d position)
   {
     this.position = position;
-    this.initialEnergy = initialEnergy;
+    Animal.initialEnergy = initialEnergy;
     this.energy = initialEnergy;
     this.map = map;
     this.map.place(this);
     this.dayOfBirth = dayOfBirth;
     DNA = new AnimalDNA();
+  }
+
+  public void setAncestryFactor(int factor)
+  {
+    isSelectedAnimal = true;
+    ancestryFactor = factor;
+  }
+
+  public boolean getIsSelectedAnimal()
+  {
+    return !isSelectedAnimal;
+  }
+
+  public int getAncestryFactor()
+  {
+    return ancestryFactor;
   }
 
   public boolean isDead()
@@ -64,6 +83,11 @@ public class Animal implements IPositionChangePublisher {
       this.dayOfDeath = day;
       this.isAlive = false;
     }
+  }
+
+  public static int getInitialEnergy()
+  {
+    return initialEnergy;
   }
 
   public void addChild()
@@ -95,10 +119,6 @@ public class Animal implements IPositionChangePublisher {
 
   public Vector2d getPosition() {
     return position;
-  }
-
-  public MapDirection getOrientation() {
-    return orientation.getOrientation();
   }
 
   public void move()
@@ -145,7 +165,6 @@ public class Animal implements IPositionChangePublisher {
     parent1.energy = parent1.energy - energy1;
     parent2.energy = parent2.energy - energy2;
     this.energy = energy1 + energy2;
-    this.initialEnergy = parent1.initialEnergy;
   }
 
   @Override

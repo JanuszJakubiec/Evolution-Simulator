@@ -33,6 +33,11 @@ public class Field {
     return animals.size() != 0;
   }
 
+  public boolean getContainsGrass()
+  {
+    return containsGrass;
+  }
+
   public void eatGrass(int aEnergy) {
     if(containsGrass)
     {
@@ -78,6 +83,11 @@ public class Field {
       }
     }
     animals.add(i,animal);
+  }
+
+  public Animal getStrongestAnimal()
+  {
+    return animals.get(0);
   }
 
   public void deleteAnimal(Animal animal)

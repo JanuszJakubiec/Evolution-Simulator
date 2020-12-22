@@ -23,4 +23,20 @@ class GrassSectorsTest {
     sector.plantGrass(fields);
     assertTrue(fields.containsKey(new Vector2d(0,0)));
   }
+
+  @Test
+  void checkIfGrassIsSpawningCorrectlyNumbers()
+  {
+    WorldMap map = new WorldMap(2,2, 0.5);
+    map.plantGrass();
+    assertEquals(map.getFields().size(), 2);
+  }
+
+  @Test
+  void checkIfGrassIsSpawningCorrectlyPositions()
+  {
+    WorldMap map = new WorldMap(2,2, 0.5);
+    map.plantGrass();
+    assertFalse(map.getFields().get(new Vector2d(0,0)).isEmpty());
+  }
 }
