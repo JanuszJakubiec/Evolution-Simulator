@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class GrassSectors implements IFieldAvailabilityPublisher {
+public class GrassSectors implements IFieldAvailabilityPublisher, IFieldAvailabilityObserver{
   private GrassSectors sectorInside = null;
   private final Vector2d leftBottomCorner;
   private final Vector2d rightTopCorner;
@@ -25,8 +25,9 @@ public class GrassSectors implements IFieldAvailabilityPublisher {
     {
       sectorInside = new GrassSectors(n-1, array, map);
     }
-    freeFields = new FreeFields(map, this);
+    freeFields = new FreeFields(this);
     markFreeFields();
+    map.addObserver(this);
   }
 
   public void plantGrass(Map<Vector2d, Field> fields)
@@ -82,6 +83,25 @@ public class GrassSectors implements IFieldAvailabilityPublisher {
     for(IFieldAvailabilityObserver observer:subscribers)
     {
       observer.setPositionAsAvailable(position);
+    }
+  }
+
+  @Override
+  public void setPositionAsUnavailable(Vector2d position) {
+    if(this.doesPointBelongTo(position))
+    {
+      for(IFieldAvailabilityObserver observer:subscribers)
+      {
+        observer.setPositionAsUnavailable(position);
+      }
+    }
+  }
+
+  @Override
+  public void setPositionAsAvailable(Vector2d position) {
+    if(this.doesPointBelongTo(position))
+    {
+      newFreePosition(position);
     }
   }
 }

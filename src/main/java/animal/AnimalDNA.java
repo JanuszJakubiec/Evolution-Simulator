@@ -67,33 +67,34 @@ public class AnimalDNA {
     Collections.sort(DNA);
   }
 
-  private void decideWhichGenesMultiply(ArrayList<Integer> DNAa, ArrayList<Integer> DNAb, int first, int second)
+  private void decideWhichGenesMultiply(ArrayList<Integer> parent1DNA, ArrayList<Integer> parent2DNA, int first, int second)
   {
-    int l1 = (int)(Math.random() * 2);
-    int l2 = (int)(Math.random() * 2);
-    int l3;
-    if(l2==l1)
-      l3 = 1-l1; // if l1 == 1, l3 = 1-1 = 0, if l1 = 0, l3 = 1-0 = 1, its always different value than l1
+    //parent1, parent2 and parent3 defines from which parent comes part 1, part 2 and part 3 of the DNA
+    int parent1 = (int)(Math.random() * 2);
+    int parent2 = (int)(Math.random() * 2);
+    int parent3;
+    if(parent2==parent1)
+      parent3 = 1-parent1; // if l1 == 1, l3 = 1-1 = 0, if l1 = 0, l3 = 1-0 = 1, its always different value than l1
     else
-      l3 = (int)(Math.random() * 2);
+      parent3 = (int)(Math.random() * 2);
 
-    if(l1 == 0) {
-      insertValues(DNAa, 0, first);
+    if(parent1 == 0) {
+      insertValues(parent1DNA, 0, first);
     }
     else
-      insertValues(DNAb, 0, first);
+      insertValues(parent2DNA, 0, first);
 
-    if(l2 == 0) {
-      insertValues(DNAa, first, second);
+    if(parent2 == 0) {
+      insertValues(parent1DNA, first, second);
     }
     else
-      insertValues(DNAb, first, second);
+      insertValues(parent2DNA, first, second);
 
-    if(l3 == 0) {
-      insertValues(DNAa, second, 32);
+    if(parent3 == 0) {
+      insertValues(parent1DNA, second, 32);
     }
     else
-      insertValues(DNAb, second, 32);
+      insertValues(parent2DNA, second, 32);
   }
 
 
@@ -127,5 +128,16 @@ public class AnimalDNA {
   @Override
   public int hashCode() {
     return Objects.hash(DNA);
+  }
+
+  @Override
+  public String toString()
+  {
+    String stringDNA = "";
+    for(int i:DNA)
+    {
+      stringDNA += Integer.toString(i);
+    }
+    return stringDNA;
   }
 }

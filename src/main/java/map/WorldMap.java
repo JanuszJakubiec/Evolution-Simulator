@@ -2,6 +2,7 @@ package map;
 import observer.IFieldAvailabilityObserver;
 import observer.IPositionChangeObserver;
 import observer.IFieldAvailabilityPublisher;
+import utilities.JungleBorderCalculator;
 import vector2d.*;
 import animal.*;
 
@@ -14,12 +15,12 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
   private final Vector2d leftBottomCorner = new Vector2d(0,0);
   private final Vector2d rightTopCorner;
   private final GrassSectors sectors;
-  LinkedList<IFieldAvailabilityObserver> subscribers = new LinkedList<>();
+  private final LinkedList<IFieldAvailabilityObserver> subscribers = new LinkedList<>();
 
   public WorldMap(int width, int height, double jungleRatio)
   {
     rightTopCorner = new Vector2d(width-1, height-1);
-    sectors = new GrassSectors(1, calculateSectorBorders(width, height, jungleRatio) , this);
+    sectors = new GrassSectors(1, JungleBorderCalculator.calculate(width, height, jungleRatio) , this);
   }
 
   public ArrayList<Animal> getDeadAnimals()
@@ -163,19 +164,5 @@ public class WorldMap implements IPositionChangeObserver, IFieldAvailabilityPubl
     {
       observer.setPositionAsUnavailable(position);
     }
-  }
-
-  private ArrayList<Vector2d> calculateSectorBorders(int width, int height, double ratio)
-  {
-    ArrayList<Vector2d> list = new ArrayList<>();
-    list.add(new Vector2d(0,0));
-    list.add(new Vector2d(width-1, height-1));
-    int x = (int) ((int) width*ratio);
-    int y = (int) ((int) height*ratio);
-    int dx = (width - x)/2;
-    int dy = (height - y)/2;
-    list.add(new Vector2d(dx,dy));
-    list.add(new Vector2d(dx+x -1, dy+y-1));
-    return list;
   }
 }

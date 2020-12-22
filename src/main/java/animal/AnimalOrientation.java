@@ -11,19 +11,19 @@ public class AnimalOrientation {
     rotate((int)(Math.random() * 8));
   }
 
-  @Override
-  public String toString() {
-    return switch (orientation) {
-      case NORTH -> "0";
-      case SOUTH -> "4";
-      case EAST -> "2";
-      case WEST -> "6";
-      case NORTHEAST -> "1";
-      case NORTHWEST -> "7";
-      case SOUTHEAST -> "3";
-      case SOUTHWEST -> "5";
-    };
-  }
+ @Override
+ public String toString() {
+   return switch (orientation) {
+     case NORTH -> "0";
+     case SOUTH -> "4";
+     case EAST -> "2";
+     case WEST -> "6";
+     case NORTHEAST -> "1";
+     case NORTHWEST -> "7";
+     case SOUTHEAST -> "3";
+     case SOUTHWEST -> "5";
+   };
+ }
 
   public MapDirection getOrientation() {
     return orientation;

@@ -8,15 +8,13 @@ import java.util.ArrayList;
 public class FreeFields implements IFieldAvailabilityObserver {
   private final ArrayList<Vector2d> free = new ArrayList<>();
 
-  public FreeFields(WorldMap map, GrassSectors sector)
+  public FreeFields(GrassSectors sector)
   {
-    map.addObserver(this);
     sector.addObserver(this);
   }
 
   public boolean isFreeFieldAvailable()
   {
-    System.out.print(free.size());
     return free.size() > 0;
   }
 

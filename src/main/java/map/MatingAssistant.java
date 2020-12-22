@@ -2,6 +2,7 @@ package map;
 
 import vector2d.Vector2d;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -25,7 +26,8 @@ public class MatingAssistant {
   public void startMating()
   {
     Collection<Field> colOfFields = fields.values();
-    for (Field current : colOfFields)
+    ArrayList<Field> fields = new ArrayList<>(colOfFields);
+    for (Field current : fields)
     {
       if (current.containsAnimals())
       {
@@ -58,8 +60,7 @@ public class MatingAssistant {
       for(int j =-1;j<2;j++)
       {
         Vector2d tmp = new Vector2d(parentPosition.x + i, parentPosition.y + j);
-        if(!tmp.precedes(rightTopCorner) || !tmp.follows(leftBottomCorner))
-          continue;
+        tmp = map.adjustPosition(tmp);
         if(!fields.containsKey(tmp))
         {
           freeFields.add(tmp);
