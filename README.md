@@ -1,6 +1,4 @@
 # Evolution Simulator
-
-------
 The application runs a simulation of the environment presented below:
 * The animals are marked as circles, having different colors depending on how much energy they have. The more energy they have, the darker they become.
 * To gain energy they need to eat grass which is marked as green rectangles. Each day one grass spawns randomly in the jungle(dark green area), and outside of it. Each animal moves exactly once a day in a direction chosen randomly from the genome.
