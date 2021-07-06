@@ -5,6 +5,7 @@ The application simulates the environment presented below:
 * If two animals meet each other and have enough energy, they reproduce, creating a new animal with a genome that is a mix of its parents’ genome.
 * On the left side of the window is an available statistics tracker, which enables to track base population data, such as average energy and number of alive animals
 * It is also possible to track one animal by clicking on it. Then more detailed data will be presented, such as the selected animal’s genome and the number of its descendants.
+* It is possible to run two simulations that run separately at once.
 ![Application view image](simulation-presentation.png "simulation")
 
 To run the program you first need to build gradle and then run gradle.
